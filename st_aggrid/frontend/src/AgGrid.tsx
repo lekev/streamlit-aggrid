@@ -74,10 +74,10 @@ class AgGrid extends StreamlitComponentBase<State> {
           valueFormatter: (params: any) => this.dateFormatter(params.value, params.column.colDef.custom_format_string),
         },
         'customNumericFormat': {
-          valueFormatter: (params: any) => this.numberFormatter(params.value, params.column.colDef.precision ?? 2),
+          valueFormatter: (params: any) => this.numberFormatter(params.value,column.colDef.precision ?? 2),
         },
         'customCurrencyFormat': {
-          valueFormatter: (params: any) => this.currencyFormatter(params.value, params.column.colDef.custom_currency_symbol),
+          valueFormatter: (params: any) => this.currencyFormatter(params.value, params.column.colDef.custom_currency_symbol,params.column.colDef.precision ?? 2),
         },
         'timedeltaFormat': {
           valueFormatter: (params: any) => duration(params.value).humanize(true)
@@ -192,10 +192,10 @@ class AgGrid extends StreamlitComponentBase<State> {
     finally { }
   }
 
-  private currencyFormatter(number: any, currencySymbol: string): String {
+  private currencyFormatter(number: any, currencySymbol: string, precision: number): String {
     let n = Number.parseFloat(number)
     if (!Number.isNaN(n)) {
-      return currencySymbol + n.toFixed(2)
+      return currencySymbol + this.numberFormatter(n, precision)
     } else {
       return number
     }
@@ -204,7 +204,7 @@ class AgGrid extends StreamlitComponentBase<State> {
   private numberFormatter(number: any, precision: number): String {
     let n = Number.parseFloat(number)
     if (!Number.isNaN(n)) {
-      return n.toFixed(precision)
+      return num.toLocaleString(undefined, {minimumFractionDigits: precision, maximumFractionDigits: precision})
     } else {
       return number
     }
